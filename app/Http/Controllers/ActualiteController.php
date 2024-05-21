@@ -6,17 +6,27 @@ use Exception;
 use Inertia\Inertia;
 use App\Models\Actualite;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\StoreactualiteRequest;
-use App\Http\Requests\UpdateactualiteRequest;
+use App\Http\Resources\ActualitesResource;
 
 class ActualiteController extends Controller
 {
 
     public function index()
     {
-        $actualites = Actualite::latest()->simplePaginate(12);
+        $actualites = Actualite::latest()->Paginate(12);
+        $firstActu = Actualite::latest('created_at')->first();
+        $latestActus = Actualite::latest('created_at')->take(6)->get();
+        $othersActu = $latestActus->skip(1);
         // dd($actualites);
-        return Inertia::render('Actualites/Index', ['actualites' => $actualites]);
+        return response()->json([
+            'actualites' => ActualitesResource::collection($actualites),
+            'firstActu' => ActualitesResource::make($firstActu),
+            'othersActu' => ActualitesResource::collection($othersActu)
+        ]);
+        // return ActualitesResource::collection($actualites);
+
+
+        // return Inertia::render('Actualites/Index', ['actualites' => $actualites]);
         
     }
 
@@ -59,7 +69,8 @@ class ActualiteController extends Controller
 
     public function show(actualite $actu)
     {
-        return Inertia::render('Actualites/Show', ['actu' => $actu]);
+        return ActualitesResource::make($actu);
+
     }
 
 
@@ -69,7 +80,7 @@ class ActualiteController extends Controller
     }
 
 
-    public function update(UpdateactualiteRequest $request, actualite $actualite)
+    public function update(actualite $actualite)
     {
         //
     }

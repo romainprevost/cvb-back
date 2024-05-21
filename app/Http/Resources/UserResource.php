@@ -23,6 +23,7 @@ class UserResource extends JsonResource
                 $this->resource->is(auth()->user()), 
                 $this->email
             ),
+            'email' => $this->email,
             'role' => $this->role,
             'registeredAt' => $this->created_at,
         ];
