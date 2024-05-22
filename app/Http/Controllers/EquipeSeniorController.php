@@ -7,6 +7,8 @@ use App\Models\Staff;
 use App\Models\EquipeSenior;
 use App\Http\Requests\Storeequipe_seniorRequest;
 use App\Http\Requests\Updateequipe_seniorRequest;
+use App\Http\Resources\CoachsResource;
+use App\Http\Resources\EquipesResource;
 
 class EquipeSeniorController extends Controller
 {
@@ -26,7 +28,12 @@ class EquipeSeniorController extends Controller
         }])
         ->first();
 
-        return Inertia::render('Equipe/Index', ['equipe' => $equipe, 'coachs' => $coachs]);
+        // dd($equipe);
+
+        return response()->json([
+            'equipe' => EquipesResource::make($equipe),
+            'coachs' => CoachsResource::collection($coachs)
+        ]);
     }
 
     /**

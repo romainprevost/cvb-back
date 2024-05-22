@@ -11,11 +11,11 @@ class Joueur extends Model
 
     //n-n avec equipe_seniors
     public function equipe_seniors() { 
-        return $this->belongsToMany(Equipe_senior::class);
+        return $this->belongsToMany(EquipeSenior::class);
     }
 
     //n-n avec equipe_jeunes
     public function equipe_jeunes() { 
-        return $this->belongsToMany(Equipe_jeune::class);
+        return $this->belongsToMany(EquipeJeune::class);
     }
 }

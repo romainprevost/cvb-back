@@ -25,8 +25,4 @@ class EquipeSenior extends Model
         return $this->hasMany(Actualite::class);
     }
 
-    //1-n avec resultats
-    public function resultats() { 
-        return $this->hasMany(Resultat::class);
-    }
 }

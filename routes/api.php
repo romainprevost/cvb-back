@@ -8,6 +8,7 @@ use App\Http\Controllers\ActualiteController;
 use App\Http\Controllers\EquipeJeuneController;
 use App\Http\Controllers\EquipeSeniorController;
 use App\Http\Controllers\PartenaireController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Resources\UserResource;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -21,6 +22,16 @@ Route::get('/users', function() {
     return UserResource::collection($user);
 });
 
+//---------------------------- Dashboard Admin --------------------------------
+Route::get('/cvb-admin', [ActualiteController::class, 'index'])->name('actu.index');
+
+Route::get('/dashboard', [ActualiteController::class, 'index'])->name('actu.index');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 //---------------------------- Actualites --------------------------------
 Route::get('/actualites', [ActualiteController::class, 'index'])->name('actu.index');
 Route::get('/actualite/{actu}', [ActualiteController::class, 'show'])->name('actu.show');
@@ -28,8 +39,7 @@ Route::post('/actualite/create', [ActualiteController::class, 'create'])->name('
 Route::post('/actualite/delete/{actu}', [ActualiteController::class, 'destroy'])->name('actu.delete')->middleware('isAdmin');
 
 // ----------------------------- Equipes ----------------------------------------
-Route::get('/equipe/{equipe}', [EquipeSeniorController::class, 'index'])->name('equipe.index');
-Route::get('/equipe/{equipe}', [EquipeJeuneController::class, 'index'])->name('equipe.index');
+Route::get('/equipe-senior/{equipe_id}', [EquipeSeniorController::class, 'index'])->name('equipe.index');
 
 
 // ----------------------------- Partenaires ----------------------------------------

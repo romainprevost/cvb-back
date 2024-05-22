@@ -9,8 +9,4 @@ class Article extends Model
 {
     use HasFactory;
 
-    // 1-n avec lignes_commandes
-    public function ligne_commandes() { 
-        return $this->hasMany(Lignes_commande::class);
-    }
 }
