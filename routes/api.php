@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActualiteController;
+use App\Http\Controllers\PartenaireController;
 use App\Http\Middleware\isAdmin;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -25,3 +26,7 @@ Route::post('/actualite/create', [ActualiteController::class, 'create'])->name('
 Route::post('/actualite/delete/{actu}', [ActualiteController::class, 'destroy'])->name('actu.delete')->middleware('isAdmin');
 
 // ----------------------------- Equipes ----------------------------------------
+
+
+// ----------------------------- Partenaires ----------------------------------------
+Route::get('/partenaires', [PartenaireController::class, 'index']);

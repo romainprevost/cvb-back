@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\partenaire;
 use App\Http\Requests\StorepartenaireRequest;
 use App\Http\Requests\UpdatepartenaireRequest;
+use App\Http\Resources\PartenairesResource;
 
 class PartenaireController extends Controller
 {
@@ -13,7 +14,17 @@ class PartenaireController extends Controller
      */
     public function index()
     {
-        //
+        $partners = Partenaire::all();
+        $partnersInstitutionnels = Partenaire::query()->where('role', 'Partenaires institutionnels')->get();
+        $partnersHelp = Partenaire::query()->where('role', 'Nous ont aidés')->get();
+        $partnersPrivate = Partenaire::query()->where('role', 'Partenaires privés')->get();
+        
+        return response()->json([
+            'partners' => PartenairesResource::collection($partners),
+            'partnersInstitutionnels' => PartenairesResource::collection($partnersInstitutionnels),
+            'partnersHelp' => PartenairesResource::collection($partnersHelp),
+            'partnersPrivate' => PartenairesResource::collection($partnersPrivate)
+        ]);
     }
 
     /**
