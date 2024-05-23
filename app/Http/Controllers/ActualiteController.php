@@ -23,21 +23,22 @@ class ActualiteController extends Controller
             'firstActu' => ActualitesResource::make($firstActu),
             'othersActu' => ActualitesResource::collection($othersActu)
         ]);
-        // return ActualitesResource::collection($actualites);
-
-
-        // return Inertia::render('Actualites/Index', ['actualites' => $actualites]);
-        
     }
 
 
-    public function create()
+    public function store()
     {
         $data = request()->all();
         if (!empty($data['title']) && !empty($data['content'])) {
             $author = strip_tags($data['author']);
             $title = htmlspecialchars($data['title']);
             $content = htmlspecialchars($data['content']);
+
+            $actualite = new Actualite();
+            $actualite->titre = $title;
+            $actualite->content = $content;
+            $actualite->auteur = $author;
+            $actualite->created_at = time();
 
             if (isset($_FILES["image"]) && $_FILES["image"]["error"] == UPLOAD_ERR_OK) {
                 // Récupérez le nom du fichier
@@ -49,20 +50,15 @@ class ActualiteController extends Controller
 
                 if (move_uploaded_file($_FILES["image"]["tmp_name"], $imagePath)) {
                     // Succès
-                    $actualite = new Actualite();
-
-                    $actualite->titre = $title;
-                    $actualite->content = $content;
-                    $actualite->auteur = $author;
                     $actualite->photo = $imagePath;
-                    $actualite->created_at = time();
-
-                    $actualite->save();
                 } else {
                     // Échec
                     echo "Failed to move the uploaded file.";
                 }
-            }
+            }           
+
+            $actualite->save();
+            echo "create done";
         }
     }
 
@@ -74,12 +70,6 @@ class ActualiteController extends Controller
     }
 
 
-    public function edit(actualite $actualite)
-    {
-        //
-    }
-
-
     public function update(actualite $actualite)
     {
         //
@@ -88,15 +78,21 @@ class ActualiteController extends Controller
 
     public function destroy(actualite $actu)
     {
+        // dd($actu);
         $actuId = strip_tags($actu['id']);
-        $filepath = $actu['photo'];
+        if ($actu->photo !== '/assets/images/no-photo.png'){
+            $filepath = $actu['photo'];
+        }
 
         DB::beginTransaction();
 
         try{
             $actu = Actualite::findOrFail($actuId);
-            unlink($filepath);
+            if(isset($filepath)) {
+                // unlink($filepath);
+            }
             $actu->delete();
+            echo 'delete done';
         }
         catch(Exception $ex){ // si le try ne fonctionne pas
             DB::rollBack(); //alors ça rollback
