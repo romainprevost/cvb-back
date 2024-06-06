@@ -55,7 +55,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, /*User $user*/)
     {
         $data = request()->all();
 
@@ -130,9 +130,14 @@ class UserController extends Controller
 
         $request->session()->regenerate();
 
+        // renvoi d'un reponse en JSOn pour le front suite à la connexion du user
         return response()->json([
             'loginSuccessful' => true,
-            'user_role' => $user->role, // Envoyer uniquement le rôle de l'utilisateur
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+            ],
             'redirect_url' => '/dashboard'
         ]);    
     }
