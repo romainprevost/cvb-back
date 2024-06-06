@@ -24,11 +24,15 @@ Route::get('/users', function() {
     return UserResource::collection($user);
 });
 
+Route::post('/cvb-login', [UserController::class, 'login']);
+
+Route::post('/cvb-logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+
 //---------------------------- Dashboard Admin --------------------------------
 Route::get('/cvb-admin', [ActualiteController::class, 'index'])->name('actu.index');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('actu.index');
-// ->middleware(['auth', 'verified'])->name('dashboard')
+// Route::get('/dashboard', [DashboardController::class, 'index'])->name('actu.index')->middleware(['auth', 'isAdmin']);
+Route::get('/dashboard', [DashboardController::class, 'index']);
 
 //---------------------------- User --------------------------------
 Route::post('/user/update/{staffId}', [UserController::class, 'update'])->name('staff.update');
