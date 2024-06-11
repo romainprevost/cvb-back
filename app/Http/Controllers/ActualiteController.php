@@ -28,7 +28,7 @@ class ActualiteController extends Controller
     public function store()
     {
         $data = request()->all();
-        if (!empty($data['title']) && !empty($data['content'])) {
+        if (!empty($data['title']) && !empty($data['author'])) {
             $author = strip_tags($data['author']);
             $title = htmlspecialchars($data['title']);
             $content = htmlspecialchars($data['content']);

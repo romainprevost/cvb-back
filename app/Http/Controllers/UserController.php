@@ -101,6 +101,9 @@ class UserController extends Controller
     {
         try{
             $user->delete(); //delete
+
+            return response()->json(['success' => 'User deleted successfully', 'user' => $user], 201);
+
         }
         catch(Exception $ex){ // si le try ne fonctionne pas
             $errorMessage = $ex->getMessage(); // Récupération du message d'erreur
