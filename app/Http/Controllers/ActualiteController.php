@@ -25,7 +25,6 @@ class ActualiteController extends Controller
         ]);
     }
 
-
     public function store()
     {
         $data = request()->all();
@@ -45,12 +44,12 @@ class ActualiteController extends Controller
                 $filename = $_FILES["image"]["name"];
                 $uniqueFilename = time()."_".$filename;
 
-                $destinationPath = '/assets/actus/';
+                $destinationPath = 'assets/actus/';
                 $imagePath = $destinationPath . $uniqueFilename;
 
                 if (move_uploaded_file($_FILES["image"]["tmp_name"], $imagePath)) {
                     // Succès
-                    $actualite->photo = $imagePath;
+                    $actualite->photo = '/'.$imagePath;
                 } else {
                     // Échec
                     echo "Failed to move the uploaded file.";
@@ -58,10 +57,13 @@ class ActualiteController extends Controller
             }           
 
             $actualite->save();
-            echo "create done";
+            return response()->json([
+                'success' => 'Actuality created successfully', 
+                'actualite' => ActualitesResource::make($actualite)
+            ],201);
+
         }
     }
-
 
     public function show(actualite $actu)
     {
@@ -69,37 +71,33 @@ class ActualiteController extends Controller
 
     }
 
-
     public function update(actualite $actualite)
     {
         //
     }
 
-
     public function destroy(actualite $actu)
     {
-        // dd($actu);
-        $actuId = strip_tags($actu['id']);
-        if ($actu->photo !== '/assets/images/no-photo.png'){
-            $filepath = $actu['photo'];
+        // Vérifie si l'actualité a une photo autre que l'image par défaut
+        if ($actu->photo !== '/assets/images/no-photo.png') {
+            $filepath = public_path($actu->photo); // Récupère le chemin absolu du fichier
         }
-
-        DB::beginTransaction();
 
         try{
-            $actu = Actualite::findOrFail($actuId);
-            if(isset($filepath)) {
-                // unlink($filepath);
-            }
+            // Supprime le fichier si le chemin est défini et si le fichier existe
+            
             $actu->delete();
-            echo 'delete done';
+            
+            if (isset($filepath) && file_exists($filepath)) {
+                unlink($filepath); //delete de l'image associée à l'actu pour éviter le stock de trop d'images
+                
+            }
+            return response()->json(['success' => 'Actuality deleted successfully'], 201);
         }
         catch(Exception $ex){ // si le try ne fonctionne pas
-            DB::rollBack(); //alors ça rollback
             $errorMessage = $ex->getMessage(); // Récupération du message d'erreur
             return response()->json(['error' => $errorMessage], 500); // Par exemple, renvoyer une réponse JSON avec le message d'erreur et le code HTTP 500
         }
 
-        DB::commit(); //enregistrement de l'opération
     }
 }

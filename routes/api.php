@@ -45,12 +45,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('/actualite/create', [ActualiteController::class, 'store']);
+    Route::delete('/actualite/{actu}', [ActualiteController::class, 'destroy']);
 });
 //---------------------------- Actualites --------------------------------
 Route::get('/actualites', [ActualiteController::class, 'index']);
 Route::get('/actualite/{actu}', [ActualiteController::class, 'show']);
-Route::post('/actualite/create', [ActualiteController::class, 'store']);
-Route::delete('/actualite/delete/{actu}', [ActualiteController::class, 'destroy']);
+
 
 // ----------------------------- Equipes ----------------------------------------
 Route::get('/equipe-senior/{equipe_id}', [EquipeSeniorController::class, 'index'])->name('equipe.index');
