@@ -47,10 +47,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 //---------------------------- Actualites --------------------------------
-Route::get('/actualites', [ActualiteController::class, 'index'])->name('actu.index');
-Route::get('/actualite/{actu}', [ActualiteController::class, 'show'])->name('actu.show');
-Route::post('/actualite/create', [ActualiteController::class, 'store'])->name('actu.store');
-Route::delete('/actualite/delete/{actu}', [ActualiteController::class, 'destroy'])->name('actu.delete');
+Route::get('/actualites', [ActualiteController::class, 'index']);
+Route::get('/actualite/{actu}', [ActualiteController::class, 'show']);
+Route::post('/actualite/create', [ActualiteController::class, 'store']);
+Route::delete('/actualite/delete/{actu}', [ActualiteController::class, 'destroy']);
 
 // ----------------------------- Equipes ----------------------------------------
 Route::get('/equipe-senior/{equipe_id}', [EquipeSeniorController::class, 'index'])->name('equipe.index');

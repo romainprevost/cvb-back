@@ -45,7 +45,7 @@ class ActualiteController extends Controller
                 $filename = $_FILES["image"]["name"];
                 $uniqueFilename = time()."_".$filename;
 
-                $destinationPath = 'assets/actus/';
+                $destinationPath = '/assets/actus/';
                 $imagePath = $destinationPath . $uniqueFilename;
 
                 if (move_uploaded_file($_FILES["image"]["tmp_name"], $imagePath)) {

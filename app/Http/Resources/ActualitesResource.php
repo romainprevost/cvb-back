@@ -19,7 +19,7 @@ class ActualitesResource extends JsonResource
             'titre' => $this->titre,
             'content' => $this->content,
             'auteur' => $this->auteur,
-            'photo' => $this->photo,
+            'photo' => url($this->photo),
             'equipe_jeune_id' => $this->equipe_jeune_id,
             'equipe_senior_id' => $this->equipe_senior_id,
             'created_at' => $this->created_at,

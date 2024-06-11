@@ -11,11 +11,11 @@ class Actualite extends Model
 
     //1-n equipe_seniors
     public function equipe_senior() { 
-        return $this->belongsTo(Equipe_senior::class);
+        return $this->belongsTo(EquipeSenior::class);
     }
 
     //1-n equipe_jeunes 
     public function equipe_jeune() { 
-        return $this->belongsTo(Equipe_jeune::class);
+        return $this->belongsTo(EquipeJeune::class);
     }
 }
