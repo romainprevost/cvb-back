@@ -23,58 +23,67 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function store()
     {
-        //
+        $validateData = request()->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string'
+        ]);
+
+        $name = htmlspecialchars($validateData['name']);
+        $email = htmlspecialchars($validateData['email']);
+        $password = $validateData['password'];
+
+        DB::beginTransaction();
+        
+        try {
+            $user = User::create([
+                'name' => $name, 
+                'email' => $email, 
+                'password' => $password
+            ]);
+
+            //confirmation de la transaction
+            DB::commit();
+
+            return response()->json(['success' => 'User created successfully', 'user' => $user], 201);
+            
+        } catch(Exception $ex){ // si le try ne fonctionne pas
+            DB::rollBack(); //alors ça rollback
+            $errorMessage = $ex->getMessage(); // Récupération du message d'erreur
+            return response()->json(['error' => $errorMessage], 500); // Par exemple, renvoyer une réponse JSON avec le message d'erreur et le code HTTP 500
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
+    
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, /*User $user*/)
+    public function update(Request $request, User $user)
     {
-        $data = request()->all();
+        //validation
+        $validateData = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email'
+        ]);
 
-        $userId = $data['id'];
-        $userName = $data['name'];
-        $userEmail = $data['email'];
-
+        // $data = request()->all();
+        
+        $userName = htmlspecialchars($validateData['name']);
+        $userEmail = htmlspecialchars($validateData['email']);
+        
+        // dd($userId);
         DB::beginTransaction();
 
         try{
-            $user = User::findOrFail($userId);
-
             // Mettre à jour les attributs de l'utilisateur avec les nouvelles valeurs
                 $user->name = $userName;
                 $user->email = $userEmail;
-
             // Enregistrer les modifications dans la base de données
                 $user->save();
-
+            DB::commit(); //enregistrement de l'opération
         }
         catch(Exception $ex){ // si le try ne fonctionne pas
             DB::rollBack(); //alors ça rollback
@@ -82,7 +91,6 @@ class UserController extends Controller
             return response()->json(['error' => $errorMessage], 500); // Par exemple, renvoyer une réponse JSON avec le message d'erreur et le code HTTP 500
         }
 
-        DB::commit(); //enregistrement de l'opération
         
     }
 
@@ -91,23 +99,13 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $data = request()->all();
-        $userId = $data['id'];
-
-        DB::beginTransaction();
-
         try{
-            $user = User::findOrFail($userId);
-            dd($user);
-            $user->delete();
+            $user->delete(); //delete
         }
         catch(Exception $ex){ // si le try ne fonctionne pas
-            DB::rollBack(); //alors ça rollback
             $errorMessage = $ex->getMessage(); // Récupération du message d'erreur
             return response()->json(['error' => $errorMessage], 500); // Par exemple, renvoyer une réponse JSON avec le message d'erreur et le code HTTP 500
         }
-
-        DB::commit(); //enregistrement de l'opération
     }
 
     public function login(Request $request)
@@ -130,7 +128,7 @@ class UserController extends Controller
 
         $request->session()->regenerate();
 
-        // renvoi d'un reponse en JSOn pour le front suite à la connexion du user
+        // renvoi d'un reponse en Jonn pour le front suite à la connexion du user
         return response()->json([
             'loginSuccessful' => true,
             'user' => [

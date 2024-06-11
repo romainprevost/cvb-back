@@ -29,14 +29,16 @@ Route::post('/cvb-login', [UserController::class, 'login']);
 Route::post('/cvb-logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 
 //---------------------------- Dashboard Admin --------------------------------
-Route::get('/cvb-admin', [ActualiteController::class, 'index'])->name('actu.index');
+Route::get('/cvb-admin', [ActualiteController::class, 'index']);
 
-// Route::get('/dashboard', [DashboardController::class, 'index'])->name('actu.index')->middleware(['auth', 'isAdmin']);
-Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(isAdmin::class);
 
 //---------------------------- User --------------------------------
-Route::post('/user/update/{staffId}', [UserController::class, 'update'])->name('staff.update');
-Route::post('/user/delete/{staffId}', [UserController::class, 'destroy'])->name('staff.delete');
+Route::middleware(isAdmin::class)->group(function () { // utilisation du middleware sans alias
+    Route::post('/user/create', [UserController::class, 'store']);
+    Route::post('/user/update/{user}', [UserController::class, 'update']);
+    Route::delete('/user/{user}', [UserController::class, 'destroy']);
+});
 
 //---------------------------- Profil --------------------------------
 Route::middleware('auth')->group(function () {
@@ -48,7 +50,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/actualites', [ActualiteController::class, 'index'])->name('actu.index');
 Route::get('/actualite/{actu}', [ActualiteController::class, 'show'])->name('actu.show');
 Route::post('/actualite/create', [ActualiteController::class, 'store'])->name('actu.store');
-Route::post('/actualite/delete/{actu}', [ActualiteController::class, 'destroy'])->name('actu.delete');
+Route::delete('/actualite/delete/{actu}', [ActualiteController::class, 'destroy'])->name('actu.delete');
 
 // ----------------------------- Equipes ----------------------------------------
 Route::get('/equipe-senior/{equipe_id}', [EquipeSeniorController::class, 'index'])->name('equipe.index');
